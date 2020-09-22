@@ -1,0 +1,2 @@
+# wonderQ
+WonderQ is a broker that allows producers to write to it, and consumers to read from it. It runs on a single server. Whenever a producer writes to WonderQ, a message ID is generated and returned as confirmation. Whenever a consumer polls WonderQ for new messages, it can get those messages. These messages should NOT be available for processing by any other consumer that may be concurrently accessing WonderQ.
