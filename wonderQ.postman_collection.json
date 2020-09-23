@@ -10,24 +10,29 @@
 		{
 			"name": "Push a message to the queue",
 			"request": {
-				"url": "localhost:5000/api/push-message",
+				"url": "localhost:8000/api/push-message",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
 						"value": "application/json",
 						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByb2R1Y2VyQG1haWwuY29tIiwidXNlclR5cGUiOiJwcm9kdWNlciIsImlhdCI6MTYwMDg2NDE4NH0.l9jP2ci8J_c4ucy6WPByrbOB2bTILJYZm9hbAFBNg10",
+						"description": ""
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"message\": \"\"\n}"
+					"raw": "{\n  \"message\": \"second commit\"\n}"
 				},
 				"description": "This endpoint pushes a message to the queue"
 			},
 			"response": [
 				{
-					"id": "0f591863-0cfb-468a-9f21-b9b96f60f1e6",
+					"id": "8aac63ba-d809-48c8-a090-18c3cc91d18c",
 					"name": "When an empty message is inputted",
 					"originalRequest": {
 						"url": "localhost:5000/api/push-message",
@@ -35,9 +40,15 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
 								"value": "application/json",
-								"description": ""
+								"description": "",
+								"warning": ""
+							},
+							{
+								"key": "Proxy-Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByb2R1Y2VyQG1haWwuY29tIiwidXNlclR5cGUiOiJwcm9kdWNlciIsImlhdCI6MTYwMDg2NDE4NH0.l9jP2ci8J_c4ucy6WPByrbOB2bTILJYZm9hbAFBNg10",
+								"description": "",
+								"warning": ""
 							}
 						],
 						"body": {
@@ -92,17 +103,23 @@
 					"body": "{\"message\":\"You are yet to input a message\"}"
 				},
 				{
-					"id": "1733fc58-a43a-4692-8001-8e5d483e3f0b",
-					"name": "When a message is push to the queue it returns a message and a generated message id",
+					"id": "c9b3f7a9-1c10-41c4-9d4c-26e5eb2f8f8a",
+					"name": "When a message is push to the queue it returns a message and a generated message id. The input value is a string and it is required.",
 					"originalRequest": {
 						"url": "localhost:5000/api/push-message",
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
 								"value": "application/json",
-								"description": ""
+								"description": "",
+								"warning": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByb2R1Y2VyQG1haWwuY29tIiwidXNlclR5cGUiOiJwcm9kdWNlciIsImlhdCI6MTYwMDg2NDE4NH0.l9jP2ci8J_c4ucy6WPByrbOB2bTILJYZm9hbAFBNg10",
+								"description": "",
+								"warning": ""
 							}
 						],
 						"body": {
@@ -169,7 +186,7 @@
 			},
 			"response": [
 				{
-					"id": "6687efa4-92ef-44a7-aa05-8f390dde833e",
+					"id": "d3e4cf3a-4fe1-4235-948f-db451690e29a",
 					"name": "This returns a message and an empty data when a push is yet to be made to the queue",
 					"originalRequest": {
 						"url": "localhost:5000/api/messages",
@@ -224,7 +241,7 @@
 					"body": "{\"message\":\"You are yet to push a message\",\"data\":{}}"
 				},
 				{
-					"id": "e51148a4-ee27-4192-821a-2dff102ac3be",
+					"id": "8a1aea4b-3b8c-42ab-9836-4d4dff7b9cf0",
 					"name": "Returns the first message id and the data that is been sent to the queue",
 					"originalRequest": {
 						"url": "localhost:5000/api/messages",
@@ -281,9 +298,9 @@
 			]
 		},
 		{
-			"name": "Deletes the message from the queue that has been processed",
+			"name": "Login a producer",
 			"request": {
-				"url": "localhost:5000/api/check-message",
+				"url": "localhost:8000/api/login-producer",
 				"method": "POST",
 				"header": [
 					{
@@ -294,142 +311,11 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"messageId\": \"\"\n}"
+					"raw": "{\n\t\"email\": \"producer@mail.com\",\n\t\"password\": \"password\"\n}"
 				},
-				"description": "This endpoint checks if the message exist and is been proccessed then Deletes the message from the queue."
+				"description": "This endpoint login a producer with default login details"
 			},
-			"response": [
-				{
-					"id": "2eb662c7-4c6b-45b7-9765-c26c8ce4ce32",
-					"name": "Return  status error when a message id is yet to be inputted",
-					"originalRequest": {
-						"url": "localhost:5000/api/check-message",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"messageId\": \"\"\n}"
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": "json",
-					"_postman_previewtype": "text",
-					"header": [
-						{
-							"name": "connection",
-							"key": "connection",
-							"value": "keep-alive",
-							"description": "Options that are desired for the connection"
-						},
-						{
-							"name": "content-length",
-							"key": "content-length",
-							"value": "47",
-							"description": "The length of the response body in octets (8-bit bytes)"
-						},
-						{
-							"name": "content-type",
-							"key": "content-type",
-							"value": "application/json; charset=utf-8",
-							"description": "The mime type of this content"
-						},
-						{
-							"name": "date",
-							"key": "date",
-							"value": "Wed, 23 Sep 2020 05:29:05 GMT",
-							"description": "The date and time that the message was sent"
-						},
-						{
-							"name": "etag",
-							"key": "etag",
-							"value": "W/\"2f-Q6Ql0PoJUZWZJX1MK7czk4Znf0Q\"",
-							"description": "An identifier for a specific version of a resource, often a message digest"
-						},
-						{
-							"name": "x-powered-by",
-							"key": "x-powered-by",
-							"value": "Express",
-							"description": "Specifies the technology (ASP.NET, PHP, JBoss, e.g.) supporting the web application (version details are often in X-Runtime, X-Version, or X-AspNet-Version)"
-						}
-					],
-					"cookie": [],
-					"responseTime": 127,
-					"body": "{\"message\":\"You are yet to input a message id\"}"
-				},
-				{
-					"id": "ba38c4aa-99f4-4a66-a45b-10bae46816fd",
-					"name": "Returns an empty object and a message when message is not found in the db object",
-					"originalRequest": {
-						"url": "localhost:5000/api/check-message",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"messageId\": \"24d41127-acc1-4663-ab32-3b1cffad4167\"\n}"
-						}
-					},
-					"status": "Not Found",
-					"code": 404,
-					"_postman_previewlanguage": "json",
-					"_postman_previewtype": "text",
-					"header": [
-						{
-							"name": "connection",
-							"key": "connection",
-							"value": "keep-alive",
-							"description": "Options that are desired for the connection"
-						},
-						{
-							"name": "content-length",
-							"key": "content-length",
-							"value": "46",
-							"description": "The length of the response body in octets (8-bit bytes)"
-						},
-						{
-							"name": "content-type",
-							"key": "content-type",
-							"value": "application/json; charset=utf-8",
-							"description": "The mime type of this content"
-						},
-						{
-							"name": "date",
-							"key": "date",
-							"value": "Wed, 23 Sep 2020 08:29:26 GMT",
-							"description": "The date and time that the message was sent"
-						},
-						{
-							"name": "etag",
-							"key": "etag",
-							"value": "W/\"2e-LXrdj1SvT1MrOEzlubdQEM8tjvs\"",
-							"description": "An identifier for a specific version of a resource, often a message digest"
-						},
-						{
-							"name": "x-powered-by",
-							"key": "x-powered-by",
-							"value": "Express",
-							"description": "Specifies the technology (ASP.NET, PHP, JBoss, e.g.) supporting the web application (version details are often in X-Runtime, X-Version, or X-AspNet-Version)"
-						}
-					],
-					"cookie": [],
-					"responseTime": 133,
-					"body": "{\"message\":\"Push Message not found\",\"data\":{}}"
-				}
-			]
+			"response": []
 		}
 	]
 }

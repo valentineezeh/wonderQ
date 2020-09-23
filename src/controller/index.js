@@ -32,7 +32,7 @@ class MessagesController {
   static async loginProducer(req, res) {
     try {
       const { email, password } = req.body;
-      if (email !== authdb.email && password !== authdb.password) {
+      if (email !== authdb.email && password !== process.env.password) {
         return res.status(400).json({
           message: 'Invalid credentials'
         });
