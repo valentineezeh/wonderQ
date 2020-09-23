@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cron from 'node-cron';
 import router from './routes';
-import { resetDbMethod  } from './controller';
+import { resetDbMethod } from './controller';
 
 // fire express
 const app = express();
@@ -40,12 +40,11 @@ app.use((req, res, next) => {
 // initialize cron job
 cron.schedule('*/1 * * * *', () => {
   resetDbMethod();
-  console.log('see me here oooo')
 });
 
 
 // port destination
-const port = process.env.PORT || 5000; 
+const port = process.env.PORT || 8000; 
 
 // Listen on port and run the server 
 app.listen(port, () => {

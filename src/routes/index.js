@@ -1,6 +1,7 @@
 import express from 'express';
 import MessageController from '../controller/index';
-import { validateMessageInput, validateCheckMessageInput } from '../middleware/validations';
+import { validateMessageInput } from '../middleware/validations';
+import verifyUserToken from '../middleware/verifyUser';
 
 // set up router
 const router = express.Router();
@@ -8,10 +9,10 @@ const router = express.Router();
 // application endpoints
 
 // This endpoint pushes the message into the queue
-router.post('/push-message', validateMessageInput, MessageController.postMessage);
+router.post('/push-message', verifyUserToken, validateMessageInput, MessageController.postMessage);
 // This endpoint consumes the message in the queue
 router.get('/messages', MessageController.getMessage);
-// This endpoint check if the message has been consume and deletes the message before it is set back to it initial state
-router.post('/check-message', validateCheckMessageInput, MessageController.checkMessage);
+
+router.post('/login-producer', MessageController.loginProducer);
 
 export default router;

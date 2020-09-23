@@ -1,16 +1,19 @@
 /* eslint-disable no-restricted-syntax */
 import { v4 as uuidv4 } from 'uuid';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { db, authdb } from '../db';
 
-// initialize a db
-const db = {};
-const newObj = {};
+dotenv.config();
+
+let viewData = {};
 
 // resetDbMethod this method id called in the cron job to reset the processState back to false after a duration of time
 export const resetDbMethod = () => {
-  for (const i of Object.keys(newObj)) {
-    if (newObj[i].timeFetch < new Date()) {
-      const value = newObj[i];
-      newObj[i] = { ...value, processState: false }
+  for (const i of Object.keys(viewData)) {
+    if (viewData[i].processState) {
+      const value = viewData[i];
+      viewData[i] = { ...value, processState: false };
     }
   }
 };
@@ -21,6 +24,33 @@ export const resetDbMethod = () => {
  */
 class MessagesController {
   /**
+     * @description validate a producer login details
+     * @param {Object} req - Http Request object
+     * @param {Object} res - Http Request object
+     * @returns {Object} returns a payload of token
+     */
+  static async loginProducer(req, res) {
+    try {
+      const { email, password } = req.body;
+      if (email !== authdb.email && password !== authdb.password) {
+        return res.status(400).json({
+          message: 'Invalid credentials'
+        });
+      }
+
+      const token = jwt.sign({ email, userType: 'producer' }, process.env.secret);
+      return res.status(200).json({
+        message: 'Success! you are now logged in.',
+        data: token
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Internal server error.'
+      });
+    }
+  }
+
+  /**
      * @description post a message to the queue
      * @param {Object} req - Http Request object
      * @param {Object} res - Http Request object
@@ -28,8 +58,19 @@ class MessagesController {
      */
   static async postMessage(req, res) {
     try {
+      // Get userType using the token
+      const { userType } = req.userData;
+
       // get message from the user
       const { message } = req.body;
+
+      // Check if user is a producer then allow access
+      if (userType !== 'producer') {
+        return res.status(400).json({
+          message: 'Only a producer can push a message to wonderQ'
+        });
+      }
+    
       // generate unique id
       const generateID = uuidv4();
       // store message and the generated id in the db object as the id as the key
@@ -37,6 +78,7 @@ class MessagesController {
         processState: false,
         message
       };
+
       // if everything goes right create a message and return the new generated id
       return res.status(200).json({
         message: 'This is your message ID',
@@ -58,8 +100,6 @@ class MessagesController {
      */
   static async getMessage(req, res) {
     try {
-      let newMessage;
-      let messageId;
       // check if db is empty and return appropriate response
       if (Object.keys(db).length === 0) {
         return res.status(404).json({
@@ -72,61 +112,29 @@ class MessagesController {
       for (const i of Object.keys(db)) {
         if (!db[i].processState) {
           const value = db[i];
-          newObj[i] = { ...value, processState: true, timeFetch: new Date() };
-          newMessage = value.message;
-          messageId = i;
-          break;
-        }
-      }
-      // if all messages are currently been processed return this message
-      if (Object.keys(newObj).length === 0) {
-        return res.status(404).json({
-          message: 'All messages are currently been consumed'
-        });
-      }
-      // If everything goes on well and a message has been successfully been consumed by a user send the message id and message
-      res.status(200).json({
-        id: messageId,
-        message: 'Success',
-        data: newMessage
-      });
-    } catch (error) {
-      // catch every error incase something goes wrong
-      return res.status(500).json({
-        message: 'Internal server error.'
-      });
-    }
-  }
-
-  /**
-     * @description post a message to the queue
-     * @param {Object} req - Http Request object
-     * @param {Object} res - Http Request object
-     * @returns {Object} returns list of delivery rep
-     */
-  static async checkMessage(req, res) {
-    try {
-      // Get message from the user
-      const { messageId } = req.body;
-      let lookUpId = false;
-      // loop through the db to match the message with the corresponding id that have been consume then delete that message from the queue.
-      for (const i of Object.keys(db)) {
-        if (i === messageId && db[i].processState) {
-          lookUpId = true;
+          viewData[i] = {
+            ...value, processState: true,
+          };
+          db[i] = { ...value, processState: true };
+        } else {
+          viewData = {};
+          // this delete the each message that has been processed
           delete db[i];
         }
       }
 
-      // check if message id is not found in the db and return this not found message
-      if (!lookUpId) {
-        return res.status(404).json({
-          message: 'Message not found'
+      // if all messages are currently been processed return this message
+      if (Object.keys(viewData).length === 0) {
+        return res.status(200).json({
+          message: 'All messages are currently been consumed',
+          data: {}
         });
       }
 
-      // if message id exist and message has successfully been consumed delete the message from the queue and return a success message
+      // If everything goes on well and a message has been successfully been consumed by a user send the message id and message
       return res.status(200).json({
-        message: 'Success!'
+        message: 'Success',
+        data: viewData
       });
     } catch (error) {
       // catch every error incase something goes wrong
