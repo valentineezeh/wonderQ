@@ -1,6 +1,6 @@
 import express from 'express';
 import MessageController from '../controller/index';
-import { validateMessageInput } from '../middleware/validations';
+import { validateMessageInput, validateLoginInput } from '../middleware/validations';
 import verifyUserToken from '../middleware/verifyUser';
 
 // set up router
@@ -13,6 +13,6 @@ router.post('/push-message', verifyUserToken, validateMessageInput, MessageContr
 // This endpoint consumes the message in the queue
 router.get('/messages', MessageController.getMessage);
 
-router.post('/login-producer', MessageController.loginProducer);
+router.post('/login-producer', validateLoginInput, MessageController.loginProducer);
 
 export default router;
