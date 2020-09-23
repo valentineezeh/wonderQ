@@ -19,7 +19,7 @@ WonderQ is a broker that allows producers to write to it, and consumers to read 
 | GET /api/messages                                    | Get a message from the queue       |
 | POST /api/login-producer                             | login a producer                   |  
 
-[WONDERQ API Documentation]('./wonderQ.postman_collection.json)
+[WONDERQ API Documentation]('https://documenter.getpostman.com/view/10646428/TVKEWwqa')
 
 # To Install
 - Download or clone repo

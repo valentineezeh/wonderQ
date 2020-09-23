@@ -31,19 +31,23 @@ class MessagesController {
      */
   static async loginProducer(req, res) {
     try {
+      // user login details
       const { email, password } = req.body;
+      // check if user details is the same with the one found in the db
       if (email !== authdb.email && password !== process.env.password) {
         return res.status(400).json({
           message: 'Invalid credentials'
         });
       }
-
+      // encrypt user details
       const token = jwt.sign({ email, userType: 'producer' }, process.env.secret);
+      // if everything goes on well return a token and message
       return res.status(200).json({
         message: 'Success! you are now logged in.',
         data: token
       });
     } catch (error) {
+      // throw an error if something goes wrong
       return res.status(500).json({
         message: 'Internal server error.'
       });
@@ -93,7 +97,7 @@ class MessagesController {
   }
 
   /**
-     * @description post a message to the queue
+     * @description get messages from the queue
      * @param {Object} req - Http Request object
      * @param {Object} res - Http Request object
      * @returns {Object} returns list of delivery rep
